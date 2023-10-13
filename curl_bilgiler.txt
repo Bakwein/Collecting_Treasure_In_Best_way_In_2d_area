@@ -1,0 +1,64 @@
+CURL, HTTP, FTP ve SMTP gibi çeşitli protokoller üzerinden veri transferi yapmanıza olanak tanıyan bir kütüphanedir.
+
+CURL degiskeni->curl oturumunun kimliği. Bu değişken, curl oturumunun özelliklerini ayarlamak ve curl oturumunu çalıştırmak için kullanılır.
+
+easy-> easy_handle
+
+CURL_EASY_INIT()
+curl_easy_init() fonksiyonu, transfer işlemlerini gerçekleştirmek için kullanılan bir CURL tanıtıcısı (handle) işaretçisi döndürür. Çeşitli protokoller üzerinden veri transferi yapmak için CURL kütüphanesini kullanmanın ilk adımıdır.
+
+curl_easy_init() fonksiyonu, bir curl oturumu başlatır. Bu fonksiyon, bir curl oturumunun kimliğini temsil eden bir curl_handle değişkeni döndürür.
+
+curl_easy_init() fonksiyonunun return değerleri şu şekildedir:
+NULL: curl oturumu başlatılamadı.
+Değişken: curl oturumu başlatıldı ve değişkene oturum kimliği atandı.
+
+
+CURL_EASY_SETOPT()
+
+1-curl_easy_setopt(curl, CURLOPT_URL, "http://bilgisayar.kocaeli.edu.tr/prolab1/prolab1.txt");
+curl parametresi, daha önce curl_easy_init() fonksiyonu kullanılarak başlatılan CURL tanıtıcısına bir işaretçidir.
+İKİNCİ PARAMETRE, option: curl oturumunun ayarlanacak özelliğinin adı.
+CURLOPT_URL parametresi, bu durumda aktarılacak verinin URL'sini belirten bir sabittir.
+URLOPT_URL 3. parametredeki string'i gösterir. Bu string, curl oturumunun çekeceği web sayfasının veya API'nin URL'sidir.
+CURLOPT_URL özelliğinin değeri, bir string olmalıdır. Bu string, HTTP veya HTTPS protokolü kullanılarak erişilebilen bir URL olmalıdır.
+ÜÇÜCÜ PARAMETRE, value: curl oturumunun ayarlanacak özelliğinin değeri.
+Genel olarak, bu kod satırı, CURL tanıtıcısı için URL seçeneğini ayarlar ve verinin aktarılacağı konumu belirler. Gerekli tüm seçenekler ayarlandıktan sonra, aktarım işlemi curl_easy_perform() fonksiyonu kullanılarak gerçekleştirilebilir.
+
+
+2-curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+curl oturumundan gelen verileri belleğe yazmak için kullanabileceğiniz bir callback fonksiyonunu ayarlar.
+
+CURLOPT_WRITEFUNCTION özelliğinin değeri, bir pointer olmalıdır. Bu pointer, 3.paremetredeki fonksiyonun adresini gösterir.
+
+WriteMemoryCallback, curl_easy_setopt() fonksiyonuna parametre olarak geçirilebilecek bir callback fonksiyonudur. WriteMemoryCallback fonksiyonu, aşağıdaki parametreleri alır:
+
+WriteMemoryCallback
+ptr: curl oturumundan gelen verilerin işaretçisi.
+size: gelen verilerin boyutu.
+nmemb: gelen verilerin eleman sayısı.
+userdata: kullanıcı tarafından sağlanan veri.
+Genel olarak, bu fonksiyon, alınan veriyi belleğe yazmak ve işlenen bayt sayısını döndürmekten sorumludur.
+FONKSİYON TİPİNİ VOID YAPIP RETURN DEĞERİNİ KALDIRIRSAK OKUMA HATASI VERİYOR
+
+SORU -> curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback); burada 3. parametre mutlaka WriteMemoryCallback mı olamlı kendi yazdığım başka bir fonksiyon da olamaz mı?
+CEVAP->
+Hayır, 3. parametre mutlaka WriteMemoryCallback fonksiyonu olmak zorunda değildir. Kendi yazdığınız başka bir fonksiyonu da kullanabilirsiniz.
+CURLOPT_WRITEFUNCTION özelliğinin değeri, bir pointer olmalıdır. Bu pointer, callback fonksiyonunun adresini gösterir.
+
+
+
+CURLcode result = curl_easy_perform(curl);
+transfer işlemi gerçekleşir.
+curl_easy_perform() fonksiyonu, daha önce curl_easy_setopt() fonksiyonu kullanılarak ayarlanan seçenekleri kullanarak transfer işlemini gerçekleştirir.
+curl_easy_perform() fonksiyonu, transfer işleminin başarılı olup olmadığını gösteren bir CURLcode değeri döndürür. CURLE_OK değeri, transferin başarılı olduğunu gösterirken, diğer değerler bir hata oluştuğunu gösterir.
+Bu durumda, curl_easy_perform() fonksiyonunun dönüş değeri result değişkeninde saklanır. Bu değer, transfer işleminin başarılı olup olmadığını belirlemek için kullanılabilir.
+
+CURLE_OK (0): İşlem başarıyla tamamlandı. Bu, isteğin başarılı bir şekilde gerçekleştirildiğini gösterir.
+Diğer CURLcode değerleri: Farklı hata durumlarını temsil eder. Örneğin, CURLE_UNSUPPORTED_PROTOCOL (URL'deki protokol desteklenmiyor) veya CURLE_COULDNT_CONNECT (sunucuya bağlanılamıyor) gibi hata kodları olabilir.
+
+curl_easy_cleanup(curl);
+Bu kod satırı, CURL tanıtıcısı tarafından kullanılan kaynakları temizler. curl parametresi, daha önce curl_easy_init() fonksiyonu kullanılarak başlatılan CURL tanıtıcısına bir işaretçidir. curl_easy_cleanup() fonksiyonu, tanıtıcı tarafından kullanılan kaynakları serbest bırakır, tanıtıcı tarafından ayrılan bellek dahil.
+
+
+

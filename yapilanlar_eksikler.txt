@@ -1,0 +1,18 @@
+// YAPILANLAR
+
+siteden data çekebiliyoruz
+kullanıcıdan kaç farklı satırı almak istedigi girdisini alabiliyorz
+ve bu satırlara farklı sayıları girdirtebiliyoruz
+
+
+
+
+
+
+
+
+
+
+
+//EKSİKLER 
+
