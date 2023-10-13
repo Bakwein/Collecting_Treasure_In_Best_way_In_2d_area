@@ -16,3 +16,12 @@ ve bu satırlara farklı sayıları girdirtebiliyoruz
 
 //EKSİKLER 
 
+alınan satır sayısına göre XB....F kısımları kesilecek.
+NOKTALAR BİRBİRİNDEN AYRILACAK(?)
+BİRDEN FAZLA OLAN NOKTALAR TESPİT EDİLECEK -> Kİ BU BAŞLADIĞIMIZ YERE GERİ DÖNÜŞ YANİ ŞEKİLİ TAMAMLADIĞIMIZ ANLAMINA GELECEK 
+
+Kare çizdirme fikrim;
+kenardan kenara ilerlerken eğime göre ilerleyerek önce kenar hattı çizdirmek
+sonra kalan iç kısmı çizdirmek
+kare.png(klasorde olmali)de gozuktuğu gibi eğime göre eksen eksen giderek çizdirmek
+sonra çizilmis sol üst kareden başlayarak sol ve üst kare eğer çizildiyse çokgenin içini doldurmak
