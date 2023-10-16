@@ -23,6 +23,60 @@ void print_array2(int *arr)
     }
 }
 
+struct nokta
+{
+    int x;
+    int y;
+    struct nokta *next;
+};
+
+struct satir
+{
+    char *satir_data;
+    int satir_no;
+    struct nokta *nokta_listesi;
+    struct satir *next;
+};
+
+void liste_sona_ekleme1(struct nokta **nokta_listesi,struct nokta *nokta_node)
+{
+    struct nokta *s;
+    
+    s = *nokta_listesi;
+    if(s == NULL)
+    {
+        *nokta_listesi = nokta_node;
+        nokta_node->next = NULL;
+        return;
+    }
+    while(s->next != NULL)
+    {
+        s = s->next;
+    }
+    s->next = nokta_node;
+    nokta_node->next = NULL;
+}
+
+void liste_sona_ekleme2(struct satir **satir_listesi,struct satir *satir_node)
+{
+    struct satir *s;
+    
+    s = *satir_listesi;
+    if(s == NULL)
+    {
+        *satir_listesi = satir_node;
+        satir_node->next = NULL;
+        return;
+    }
+    while(s->next != NULL)
+    {
+        s = s->next;
+    }
+    s->next = satir_node;
+    satir_node->next = NULL;
+}
+
+
 
 size_t WriteMemoryCallback(char *buf, size_t size, size_t num_item, void *s)
 {
@@ -138,11 +192,99 @@ int main(int argc,char **argv)
     
     print_array2(girilen_satirlar);
 
-    printf(GREEN"Girilmesi istenilen satır sayıları sorunsuz bir şekilde alındı!"RESET);
+    //BURADAN DEVAM EDİLECEK - BURADAN BAŞLANILDI
+    printf(GREEN"Girilmesi istenilen satır sayıları sorunsuz bir şekilde alındı!\n"RESET);
 
 
  
-    //BURADAN DEVAM EDİLECEK
+    
+
+
+    //satirin ilk elamanını oluştur
+    int satir_size = 0;
+    while(satir_size < return_value_size)
+    {
+        struct satir *ilk_satir = (struct satir*)malloc(sizeof(struct satir));
+        ilk_satir->satir_data = (char*)malloc(sizeof(char)*(strlen(ret[satir_size])-2));
+        int idx = 0;
+        for(size_t i = 2;i<strlen(ret[0])-1;i++)
+        {
+            ilk_satir->satir_data[idx] = ret[0][i];
+            idx++;
+        }
+        ilk_satir->satir_data[strlen(ret[0])] = '\0';
+        ilk_satir->satir_no = satir_size+1;
+        ilk_satir->nokta_listesi = NULL;
+        ilk_satir->next = NULL;
+
+        int nokta_sayisi = 0;
+        int idx0 = 0;
+        while(ilk_satir->satir_data[idx0] != '\0')
+        {
+            if(ilk_satir->satir_data[idx0] == '(')
+            {
+                nokta_sayisi++;
+            }
+            idx0++;
+        }
+         if(nokta_sayisi == 0)
+        {
+            ilk_satir->nokta_listesi = NULL;
+        }
+        char **nokta_split = (char**)malloc(sizeof(char*)*(nokta_sayisi+1));
+        char *temp = strdup(ilk_satir->satir_data);  // ana structtaki datanın      bozulmaması için strtok işleminden sonra bozuluyordu
+        char *tok = strtok(temp,"(");
+        int i1 = 0;
+        while(tok != NULL)
+        {
+            size_t s = 0;
+            nokta_split[i1] = (char*)malloc(sizeof(char)*(strlen(tok)));
+            strcpy(nokta_split[i1],tok);
+            for(;tok[s] != ')';s++)
+            {
+                nokta_split[i1][s] = tok[s];
+            }
+            nokta_split[i1][s] = '\0';
+
+            //printf("%d - %s\n",i,nokta_split[i]);
+            i1++;
+            tok = strtok(NULL,"(");
+        }
+        nokta_split[i1] = NULL;
+        print_array(nokta_split);
+        printf("\n");
+        int id = 0;
+        while(id < nokta_sayisi)
+        {
+            int temp_x = 0;
+            int temp_y = 0;
+            int id_ = 0;
+            struct nokta *nokta = (struct nokta*)malloc (sizeof(struct nokta));
+            while(nokta_split[id][id_] != ',')
+            {
+                temp_x = temp_x*10 + (nokta_split[id][id_] - '0');
+                id_++;
+            }
+            id_++;
+            while(nokta_split[id][id_] != '\0')
+            {
+                temp_y = temp_y*10 + (nokta_split[id][id_] - '0');
+                id_++;
+            }
+            nokta->x = temp_x;
+            nokta->y = temp_y;
+            liste_sona_ekleme1(&ilk_satir->nokta_listesi, nokta);
+            id++;
+        }
+        liste_sona_ekleme2(&ilk_satir,ilk_satir);
+        satir_size++; 
+    }
+    
+    //return value'nun 2.indexsinden başlayıp sondan bir öncek indexi alma
+    
+
+
+
     
     
     //free
