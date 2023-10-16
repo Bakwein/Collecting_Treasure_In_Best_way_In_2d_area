@@ -42,6 +42,29 @@ struct satir
     struct satir *next;
 };
 
+char	*strjoin(const char *s1, const char *s2)
+{
+	char	*str;
+	size_t	i;
+	size_t	j;
+	size_t	x;
+
+	if (!s1 ||!s2)
+		return (NULL);
+	x = (strlen(s1) + strlen(s2));
+	str = malloc(sizeof(char) * x + 1);
+	i = -1;
+	j = -1;
+	if (!str)
+		return (NULL);
+	while (s1[++i])
+		str[i] = s1[i];
+	while (s2[++j])
+		str[i++] = s2[j];
+	str[i] = '\0';
+	return (str);
+}
+
 void liste_sona_ekleme1(struct nokta **nokta_listesi,struct nokta *nokta_node)
 {
     struct nokta *s;
@@ -115,30 +138,76 @@ int main(int argc,char **argv)
     printf("Welcome to our PROLAB1's first project 🥳\n");
     printf("Made by Sefa TUNCA and Ardahan AYTAN\n\n");
 
-    // curl oturumu başlat
-    CURL *curl = curl_easy_init();
-    if(curl == NULL) // curl oturumu başlatılamadı
+    CURL *curl = curl_easy_init(); // curl oturumu başlatma - sonraki freeyi kullanabilmek için bunu yukarı aldim yoksa if blokta tanımlandığından hata veriyordu
+
+    printf("Mod seçimi;\n");
+    printf("1 - Siteden data alma modu\n");
+    printf("2- Kullanıcıdan data alma modu\n");
+    int mode;
+    printf("Mode :");
+    scanf("%d",&mode);
+
+    if(mode == 1)
     {
-        printf("curl failed\n");
-        return 0;
+        // curl devami
+        printf("CURL modu seçildi\n");
+        
+        if(curl == NULL) // curl oturumu başlatılamadı
+        {
+            printf("curl failed\n");
+            return 0;
+        }
+        //set
+        curl_easy_setopt(curl, CURLOPT_URL, "http://bilgisayar.kocaeli.edu.tr/prolab1/prolab1.txt");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+        //perform
+        CURLcode result = curl_easy_perform(curl); // transfer işlemi
+        if(result != CURLE_OK)
+        {
+            printf("İndirme hatası : %s\n",curl_easy_strerror(result));
+            return 0;
+        }
+        else
+        {
+            printf("İndirme başarılı\n");
+        }
     }
-    //set
-    curl_easy_setopt(curl, CURLOPT_URL, "http://bilgisayar.kocaeli.edu.tr/prolab1/prolab1.txt");
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-    //perform
-    CURLcode result = curl_easy_perform(curl); // transfer işlemi
-    if(result != CURLE_OK)
+    else if(mode == 2)
     {
-        printf("İndirme hatası : %s\n",curl_easy_strerror(result));
-        return 0;
+        printf("Kullanıcıdan data alma modu seçildi\n");
+
+        printf("Kaç satır girilecek : ");
+        scanf("%d",&return_value_size);
+        if(return_value_size <= 0)
+        {
+            printf("Yanlış satır sayısı girişi\n");
+            return 0;
+        }
+        char user_data[100];
+        int user_data_index = 0;
+        return_value = (char*)malloc(sizeof(char)*2);
+        return_value[0] = '-';
+        return_value[1] = '\0';
+        while(user_data_index < return_value_size)
+        {
+            printf("%d. satır : ",user_data_index+1);
+            scanf("%s",user_data);
+            return_value = strjoin(return_value,user_data);
+            if(user_data_index != return_value_size-1)
+                return_value = strjoin(return_value,"\n");
+            user_data_index++;
+        }
+
+        char *t4 = strdup(return_value+1); //strjoin hatasından kaçmak için kullandığımz -'yi atıyoruz attık
+        return_value = t4;
     }
     else
     {
-        printf("İndirme başarılı\n");
-        //printf("%s\n",return_value);
-        //printf("%d\n",return_value_size);
+        printf("Hatalı mod girişi\n");
+        return 0;
     }
-    
+    printf("%s\n",return_value);
+    //printf("%d\n",return_value_size);
 
     
     char **ret = (char**)malloc(sizeof(char*)*(return_value_size+1));//aldığımız tek boyutlu girdiği strtok ile iki boyutlu hale getiriyoruz
@@ -158,7 +227,7 @@ int main(int argc,char **argv)
     // BURASINDAN SONRA OLDUĞUNDAN PEK EMİN DEĞİLİM
 
     int girilecek_satir_sayisi = 0;
-    printf("Kaç farklı satır girilecek : ");
+    printf("Datadan kaç farklı satır seçilecek : ");
     scanf("%d",&girilecek_satir_sayisi);
     if((girilecek_satir_sayisi > return_value_size) || girilecek_satir_sayisi <= 0)
     {
@@ -166,7 +235,7 @@ int main(int argc,char **argv)
         return 0;
     }       
 
-    printf("Girilecek satırlar : \n");
+    printf("Seçilecek satırlar : \n");
     int *girilen_satirlar = (int*)malloc(sizeof(int)*(girilecek_satir_sayisi+1));
     for(int i = 0;i<girilecek_satir_sayisi;i++)
     {
@@ -198,7 +267,7 @@ int main(int argc,char **argv)
     //print_array2(girilen_satirlar);
 
     //BURADAN DEVAM EDİLECEK - BURADAN BAŞLANILDI
-    printf("Girilmesi istenilen satır sayıları sorunsuz bir şekilde alındı!\n");
+    printf("Seçilmesi istenilen satır sayıları sorunsuz bir şekilde alındı!\n");
 
     struct satir *t1 = (struct satir*)malloc(sizeof(struct satir));
  
