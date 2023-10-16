@@ -2,6 +2,7 @@
 #include <stdlib.h> //malloc
 #include <stdio.h> //printf
 #include <string.h> //strcpy
+//#include <graphics.h> //graphics.h
 
 
 //derlemek için
