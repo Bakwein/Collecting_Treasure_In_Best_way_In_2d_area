@@ -31,5 +31,7 @@ sonra çizilmis sol üst kareden başlayarak sol ve üst kare eğer çizildiyse 
 
 
 
+global olan return value'yu da degistirebilecek bir sey ekle -testler için
+
 SORU
  sayfadan alınan kısmın doğru syntaxda olup olmadığı kontrol edilecek mi??(boşluk atlama vsvsvs)

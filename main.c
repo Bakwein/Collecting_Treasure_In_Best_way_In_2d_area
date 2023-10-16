@@ -201,6 +201,7 @@ int main(int argc,char **argv)
 
 
     //satirin ilk elamanını oluştur
+    // burada sanırım döngü şekli yanlış - sayıları yazdığın pointerlarla döngüye girip o sayıları alıp satırı oluşturmak lazım(-1'e kadar ilerle)
     int satir_size = 0;
     while(satir_size < return_value_size)
     {
@@ -209,10 +210,10 @@ int main(int argc,char **argv)
         int idx = 0;
         for(size_t i = 2;i<strlen(ret[0])-1;i++)
         {
-            ilk_satir->satir_data[idx] = ret[0][i];
+            ilk_satir->satir_data[idx] = ret[satir_size][i];
             idx++;
         }
-        ilk_satir->satir_data[strlen(ret[0])] = '\0';
+        ilk_satir->satir_data[strlen(ret[satir_size])] = '\0';
         ilk_satir->satir_no = satir_size+1;
         ilk_satir->nokta_listesi = NULL;
         ilk_satir->next = NULL;
@@ -277,12 +278,19 @@ int main(int argc,char **argv)
             id++;
         }
         liste_sona_ekleme2(&ilk_satir,ilk_satir);
-        satir_size++; 
+        while(ilk_satir->nokta_listesi != NULL)
+        {
+            printf("%d - %d\n",ilk_satir->nokta_listesi->x, ilk_satir->nokta_listesi->y);
+            ilk_satir->nokta_listesi = ilk_satir->nokta_listesi->next;
+        }
+        satir_size++;
     }
+
+
     
     //return value'nun 2.indexsinden başlayıp sondan bir öncek indexi alma
     
-
+    
 
 
     
