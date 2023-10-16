@@ -1,4 +1,8 @@
-#include "PROLAB.h"
+#include <curl/curl.h>
+#include <stdlib.h> //malloc
+#include <stdio.h> //printf
+#include <string.h> //strcpy
+
 
 //derlemek için
 //gcc -Wall -Wextra -Werror -lcurl main.c
@@ -108,15 +112,14 @@ int main(int argc,char **argv)
     (void)argc;
     (void)argv;
 
-    printf(BLUE"Welcome to our PROLAB1's first project 🥳\n");
-    printf("Made by Sefa TUNCA and Ardahan AYTAN\n\n"RESET);
-
+    printf("Welcome to our PROLAB1's first project 🥳\n");
+    printf("Made by Sefa TUNCA and Ardahan AYTAN\n\n");
 
     // curl oturumu başlat
     CURL *curl = curl_easy_init();
     if(curl == NULL) // curl oturumu başlatılamadı
     {
-        printf(RED"curl failed\n"RESET);
+        printf("curl failed\n");
         return 0;
     }
     //set
@@ -126,15 +129,17 @@ int main(int argc,char **argv)
     CURLcode result = curl_easy_perform(curl); // transfer işlemi
     if(result != CURLE_OK)
     {
-        printf(RED"İndirme hatası : %s\n"RESET,curl_easy_strerror(result));
+        printf("İndirme hatası : %s\n",curl_easy_strerror(result));
         return 0;
     }
     else
     {
-        printf(GREEN"İndirme başarılı\n"RESET);
+        printf("İndirme başarılı\n");
         //printf("%s\n",return_value);
         //printf("%d\n",return_value_size);
     }
+    
+
     
     char **ret = (char**)malloc(sizeof(char*)*(return_value_size+1));//aldığımız tek boyutlu girdiği strtok ile iki boyutlu hale getiriyoruz
     char *str = strtok(return_value,"\n");
@@ -157,7 +162,7 @@ int main(int argc,char **argv)
     scanf("%d",&girilecek_satir_sayisi);
     if((girilecek_satir_sayisi > return_value_size) || girilecek_satir_sayisi <= 0)
     {
-        printf(RED"Yanlış farklı satır numarası girişi\n"RESET);
+        printf("Yanlış farklı satır numarası girişi\n");
         return 0;
     }       
 
@@ -173,7 +178,7 @@ int main(int argc,char **argv)
         scanf("%d",&girilen_satirlar[i]);
         if(girilen_satirlar[i] > return_value_size || girilen_satirlar[i] <= 0)
         {
-            printf(RED"Yanlış satır sayısı girişi\n"RESET);
+            printf("Yanlış satır sayısı girişi\n");
             return 0;
         }
         if(girilecek_satir_sayisi > 1) // daha önce girilmis mi kontrolü
@@ -182,7 +187,7 @@ int main(int argc,char **argv)
             {
                 if(girilen_satirlar[i] == girilen_satirlar[j])
                 {
-                    printf(RED"Yanlış giriş- Bu karakter daha önce girilmiş!\n"RESET);
+                    printf("Yanlış giriş- Bu karakter daha önce girilmiş!\n");
                     return 0;
                 }
             }
@@ -190,25 +195,23 @@ int main(int argc,char **argv)
     }
     girilen_satirlar[girilecek_satir_sayisi] = -1; // +1'lik kisim null atilamadigindan böyle yaptim
     
-    print_array2(girilen_satirlar);
+    //print_array2(girilen_satirlar);
 
     //BURADAN DEVAM EDİLECEK - BURADAN BAŞLANILDI
-    printf(GREEN"Girilmesi istenilen satır sayıları sorunsuz bir şekilde alındı!\n"RESET);
+    printf("Girilmesi istenilen satır sayıları sorunsuz bir şekilde alındı!\n");
 
-
+    struct satir *t1 = (struct satir*)malloc(sizeof(struct satir));
  
-    
-
-
     //satirin ilk elamanını oluştur
     // burada sanırım döngü şekli yanlış - sayıları yazdığın pointerlarla döngüye girip o sayıları alıp satırı oluşturmak lazım(-1'e kadar ilerle)
-    int satir_size = 0;
-    while(satir_size < return_value_size)
+    int sf = 0;
+    while(girilen_satirlar[sf] != -1)
     {
+        int satir_size = girilen_satirlar[sf]-1;
         struct satir *ilk_satir = (struct satir*)malloc(sizeof(struct satir));
         ilk_satir->satir_data = (char*)malloc(sizeof(char)*(strlen(ret[satir_size])-2));
         int idx = 0;
-        for(size_t i = 2;i<strlen(ret[0])-1;i++)
+        for(size_t i = 2;i<strlen(ret[satir_size])-1;i++)
         {
             ilk_satir->satir_data[idx] = ret[satir_size][i];
             idx++;
@@ -252,8 +255,8 @@ int main(int argc,char **argv)
             tok = strtok(NULL,"(");
         }
         nokta_split[i1] = NULL;
-        print_array(nokta_split);
-        printf("\n");
+        //print_array(nokta_split);
+        //printf("\n");
         int id = 0;
         while(id < nokta_sayisi)
         {
@@ -277,23 +280,24 @@ int main(int argc,char **argv)
             liste_sona_ekleme1(&ilk_satir->nokta_listesi, nokta);
             id++;
         }
-        liste_sona_ekleme2(&ilk_satir,ilk_satir);
-        while(ilk_satir->nokta_listesi != NULL)
-        {
-            printf("%d - %d\n",ilk_satir->nokta_listesi->x, ilk_satir->nokta_listesi->y);
-            ilk_satir->nokta_listesi = ilk_satir->nokta_listesi->next;
-        }
-        satir_size++;
+        liste_sona_ekleme2(&t1,ilk_satir);
+        sf++;
     }
 
+    t1 = t1->next; // basta hep null gosteriyordu nedeni bilmiom xD
+    while(t1 != NULL)
+    {
+        printf("%d - %s\n",t1->satir_no,t1->satir_data);
+        while(t1->nokta_listesi != NULL)
+        {
+            printf("%d - %d\n",t1->nokta_listesi->x, t1->nokta_listesi->y);
+            t1->nokta_listesi = t1->nokta_listesi->next;
+        }
+        printf("\n");
+        t1 = t1->next;
+    }
+    
 
-    
-    //return value'nun 2.indexsinden başlayıp sondan bir öncek indexi alma
-    
-    
-
-
-    
     
     //free
     free(return_value);

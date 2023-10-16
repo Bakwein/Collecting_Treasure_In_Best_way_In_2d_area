@@ -5,7 +5,8 @@ kullanıcıdan kaç farklı satırı almak istedigi girdisini alabiliyorz
 ve bu satırlara farklı sayıları girdirtebiliyoruz
 
 
-
+alınan satır sayısına göre XB....F kısımları kesilecek.-YAPILDI
+NOKTALAR BİRBİRİNDEN AYRILACAK(?)-YAPILDI
 
 
 
@@ -17,10 +18,10 @@ ve bu satırlara farklı sayıları girdirtebiliyoruz
 //EKSİKLER 
 
 
-YENİ KURDUĞUM UZUN WHILE'A KONTROL LAZIM!!!!!!!!!!!
+mode 1'i parantez içine alamıyorum yoksa sonraki free_curl çalışmıyor
 
-alınan satır sayısına göre XB....F kısımları kesilecek.
-NOKTALAR BİRBİRİNDEN AYRILACAK(?)
+
+
 BİRDEN FAZLA OLAN NOKTALAR TESPİT EDİLECEK -> Kİ BU BAŞLADIĞIMIZ YERE GERİ DÖNÜŞ YANİ ŞEKİLİ TAMAMLADIĞIMIZ ANLAMINA GELECEK 
 
 Kare çizdirme fikrim;
