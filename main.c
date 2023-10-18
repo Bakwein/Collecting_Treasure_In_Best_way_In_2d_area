@@ -40,6 +40,7 @@ struct satir
     char *satir_data;
     int satir_no;
     struct nokta *nokta_listesi;
+    int sekil_sayisi;
     struct satir *next;
 };
 
@@ -143,7 +144,7 @@ int main(int argc,char **argv)
 
     printf("Mod seçimi;\n");
     printf("1 - Siteden data alma modu\n");
-    printf("2- Kullanıcıdan data alma modu\n");
+    printf("2- Kullanicidan data alma modu\n");
     int mode;
     printf("Mode :");
     scanf("%d",&mode);
@@ -151,7 +152,7 @@ int main(int argc,char **argv)
     if(mode == 1)
     {
         // curl devami
-        printf("CURL modu seçildi\n");
+        printf("CURL modu secildi\n");
         
         if(curl == NULL) // curl oturumu başlatılamadı
         {
@@ -165,23 +166,23 @@ int main(int argc,char **argv)
         CURLcode result = curl_easy_perform(curl); // transfer işlemi
         if(result != CURLE_OK)
         {
-            printf("İndirme hatası : %s\n",curl_easy_strerror(result));
+            printf("Indirme hatasi : %s\n",curl_easy_strerror(result));
             return 0;
         }
         else
         {
-            printf("İndirme başarılı\n");
+            printf("Indirme basarili\n");
         }
     }
     else if(mode == 2)
     {
-        printf("Kullanıcıdan data alma modu seçildi\n");
+        printf("Kullanicidan data alma modu secildi\n");
 
-        printf("Kaç satır girilecek : ");
+        printf("Kac satir girilecek : ");
         scanf("%d",&return_value_size);
         if(return_value_size <= 0)
         {
-            printf("Yanlış satır sayısı girişi\n");
+            printf("Yanlis satir sayisi girisi\n");
             return 0;
         }
         char user_data[100];
@@ -191,7 +192,7 @@ int main(int argc,char **argv)
         return_value[1] = '\0';
         while(user_data_index < return_value_size)
         {
-            printf("%d. satır : ",user_data_index+1);
+            printf("%d. satir : ",user_data_index+1);
             scanf("%s",user_data);
             return_value = strjoin(return_value,user_data);
             if(user_data_index != return_value_size-1)
@@ -204,7 +205,7 @@ int main(int argc,char **argv)
     }
     else
     {
-        printf("Hatalı mod girişi\n");
+        printf("Hatali mod girisi\n");
         return 0;
     }
     printf("%s\n",return_value);
@@ -228,15 +229,15 @@ int main(int argc,char **argv)
     // BURASINDAN SONRA OLDUĞUNDAN PEK EMİN DEĞİLİM
 
     int girilecek_satir_sayisi = 0;
-    printf("Datadan kaç farklı satır seçilecek : ");
+    printf("Datadan kaç farkli satir secilecek : ");
     scanf("%d",&girilecek_satir_sayisi);
     if((girilecek_satir_sayisi > return_value_size) || girilecek_satir_sayisi <= 0)
     {
-        printf("Yanlış farklı satır numarası girişi\n");
+        printf("Yanlis farklı satir numarasi girisi\n");
         return 0;
     }       
 
-    printf("Seçilecek satırlar : \n");
+    printf("Secilecek satirlar : \n");
     int *girilen_satirlar = (int*)malloc(sizeof(int)*(girilecek_satir_sayisi+1));
     for(int i = 0;i<girilecek_satir_sayisi;i++)
     {
@@ -244,11 +245,11 @@ int main(int argc,char **argv)
     }
     for(int i = 0;i<girilecek_satir_sayisi;i++)
     {
-        printf("%d. satır : ",i+1);
+        printf("%d. satir no : ",i+1);
         scanf("%d",&girilen_satirlar[i]);
         if(girilen_satirlar[i] > return_value_size || girilen_satirlar[i] <= 0)
         {
-            printf("Yanlış satır sayısı girişi\n");
+            printf("Yanlis satir sayisi girisi\n");
             return 0;
         }
         if(girilecek_satir_sayisi > 1) // daha önce girilmis mi kontrolü
@@ -257,7 +258,7 @@ int main(int argc,char **argv)
             {
                 if(girilen_satirlar[i] == girilen_satirlar[j])
                 {
-                    printf("Yanlış giriş- Bu karakter daha önce girilmiş!\n");
+                    printf("Yanlis giris - Bu karakter daha once girilmis!\n");
                     return 0;
                 }
             }
@@ -268,7 +269,7 @@ int main(int argc,char **argv)
     //print_array2(girilen_satirlar);
 
     //BURADAN DEVAM EDİLECEK - BURADAN BAŞLANILDI
-    printf("Seçilmesi istenilen satır sayıları sorunsuz bir şekilde alındı!\n");
+    printf("Secilmesi istenilen satir sayilari sorunsuz bir sekilde alindi!\n");
 
     struct satir *t1 = (struct satir*)malloc(sizeof(struct satir));
  
@@ -354,18 +355,31 @@ int main(int argc,char **argv)
         sf++;
     }
 
+    int sayici = 0;
     t1 = t1->next; // basta hep null gosteriyordu nedeni bilmiom xD
     while(t1 != NULL)
     {
-        printf("%d - %s\n",t1->satir_no,t1->satir_data);
         while(t1->nokta_listesi != NULL)
         {
-            printf("%d - %d\n",t1->nokta_listesi->x, t1->nokta_listesi->y);
+            struct nokta *t_tutucu = malloc(sizeof(struct nokta));
+            t_tutucu = t1->nokta_listesi;
+            while(t_tutucu->next != NULL)
+            {
+                if(t_tutucu->next->x == t1->nokta_listesi->x && t_tutucu->next->y == t1->nokta_listesi->y)
+                {
+                    //printf("Ayni noktalar bulundu.\n");
+                    t1->sekil_sayisi++;
+                }
+                t_tutucu = t_tutucu->next;
+            }
             t1->nokta_listesi = t1->nokta_listesi->next;
         }
-        printf("\n");
+        //printf("\n");
+        printf("%d. sekil sayisi : %d\n",sayici,t1->sekil_sayisi);
         t1 = t1->next;
+        sayici++;
     }
+
     
 
     
