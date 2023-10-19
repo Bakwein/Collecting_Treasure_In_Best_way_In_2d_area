@@ -3,6 +3,7 @@
 #include <stdio.h> //printf
 #include <string.h> //strcpy
 //#include <graphics.h> //graphics.h
+#include "minilibx/mlx.h" //minilibx
 
 
 //derlemek için
@@ -130,6 +131,65 @@ size_t WriteMemoryCallback(char *buf, size_t size, size_t num_item, void *s)
         return_value_size++;
     return bytes;
 }
+
+#define WIDTH 1000
+#define HEIGHT 1000
+
+struct forMLX
+{
+    void *mlx;
+    void *win;
+};
+
+void fill_white(void *mlx,void *win)
+{
+    int x = 0;
+    int y = 0;
+    while(x < WIDTH)
+    {
+        y = 0;
+        while(y < HEIGHT)
+        {
+            if(x % 10 == 0)
+            {
+                 mlx_pixel_put(mlx,win,x,y,0xFFFFFF);
+            }
+            else
+            {
+                if(y% 10 == 0)
+                {
+                    mlx_pixel_put(mlx,win,x,y,0xFFFFFF);
+                }
+            }
+            y++;
+        }
+        x++;
+    }
+}
+
+//what is red in hex
+//0xFF0000
+
+void nokta_ciz(void *mlx,void *win,int x, int y)
+{
+    int a = -4;
+    int b = -4;
+    while(a <= 4)
+    {
+        b = -4;
+        while(b <= 4)
+        {
+            if(x+a >= 0 && y+b >= 0)
+            {
+                mlx_pixel_put(mlx,win,(x*10)+a,(y*10)+b,0xFF0000);
+            }
+            b++;
+        }
+        a++;
+    }
+
+}
+
 
 int main(int argc,char **argv)
 {
@@ -355,12 +415,19 @@ int main(int argc,char **argv)
         sf++;
     }
 
+
+    struct forMLX *t2 = (struct forMLX*)malloc(sizeof(struct forMLX));
+    t2->mlx = mlx_init();
+    t2->win = mlx_new_window(t2->mlx,WIDTH,HEIGHT, "PRO LAB1!");
+    fill_white(t2->mlx,t2->win);
+
     int sayici = 0;
     t1 = t1->next; // basta hep null gosteriyordu nedeni bilmiom xD
     while(t1 != NULL)
     {
         while(t1->nokta_listesi != NULL)
         {
+            nokta_ciz(t2->mlx,t2->win,t1->nokta_listesi->x,t1->nokta_listesi->y);
             struct nokta *t_tutucu = malloc(sizeof(struct nokta));
             t_tutucu = t1->nokta_listesi;
             while(t_tutucu->next != NULL)
@@ -380,6 +447,10 @@ int main(int argc,char **argv)
         sayici++;
     }
 
+
+    //mlx_hook when press x button
+    
+    mlx_loop(t2->mlx);
     
 
     
